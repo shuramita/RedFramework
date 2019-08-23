@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DatabaseModule } from './core/database/database.module';
 import { AuthModule } from './core/auth/auth.module';
 import { ConfigModule } from './core/config/config.module';
@@ -14,10 +12,40 @@ import { SigningModule } from './modules/signing/signing.module';
 import { CollaborationModule } from './modules/collaboration/collaboration.module';
 import { CacheModule } from './core/cache/cache.module';
 import { FilesystemModule } from './core/filesystem/filesystem.module';
+import { ConfigService } from './core/config/config.service';
+
+import { DynamicModule } from '@nestjs/common';
+
 
 @Module({
-  imports: [ConfigModule ],
-  controllers: [AppController],
-  providers: [AppService],
+    
 })
-export class AppModule {}
+export class FrameworkModule {
+    static forRoot(appService: any) {
+            
+    }
+    static boot(appService: any){
+        // console.log(appService.getAppPath());
+        return FrameworkModule.loadConfiguration(appService);
+        // return this;
+        // return [
+        //     FrameworkModule.loadConfiguration(appService)
+        // ];
+    }
+    static loadConfiguration(appService: any){
+        const configProviders = {
+            provider: ConfigService,
+            useFactory: async (appService)=>{
+                return new ConfigService(appService);        
+            }
+        };
+        return {
+            module: ConfigModule,
+            providers:[configProviders]
+        };
+        
+    }
+    static loadDatabase(){
+
+    }
+}
