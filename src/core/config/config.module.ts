@@ -1,10 +1,10 @@
 import { Module, Global } from '@nestjs/common';
-import { ConfigService } from './config.service';    
-// import { ConfigModule as NestConfigModule} from 'nestjs-config';
-// import * as path from 'path';
+import { ConfigService } from './config.service';
+
 @Global()
 @Module({})
 export class ConfigModule {
+    protected enableLog:boolean = true;
     static forRoot(appService:any){
       console.log('ConfigModule::forRoot',appService.getAppPath());
         const configProviders = {
@@ -16,7 +16,8 @@ export class ConfigModule {
         };
         return {
             module: ConfigModule,
-            providers:[configProviders]
+            providers:[configProviders],
+            exports:[configProviders]
         };
     }
 }

@@ -24,16 +24,20 @@ import { DatabaseModule } from './core/database/database.module';
 export class FrameworkModule {
     static boot(appService: any){
         console.log(appService.getAppPath());
-        return [
+        return  [
             FrameworkModule.loadConfiguration(appService),
             FrameworkModule.loadDatabase()
         ];
     }
-    static loadConfiguration(appService: any): DynamicModule{
-        console.log('FrameworkModule::loadConfiguration',appService.getAppPath());
-        return ConfigModule.forRoot(appService);        
+    static async loadConfiguration(appService: any){
+        console.log('FrameworkModule::loadConfiguration',appService);
+        return await ConfigModule.forRoot(appService);   
+
     }
     static loadDatabase(){
-        return DatabaseModule;
+        return DatabaseModule.forRoot();
+    }
+    static exports(){
+        return [ConfigModule];
     }
 }
